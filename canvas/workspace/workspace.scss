@@ -1,0 +1,107 @@
+@import "mixins";
+@import "colours";
+
+#workspace {
+  position: absolute;
+  margin: 0;
+  top: 0;
+  left: 179px;
+  bottom: 0;
+  right: 322px;
+  overflow: hidden;
+  @include component-border;
+  transition: left 0.2s ease-in-out;
+}
+
+#workspace-header {
+  position: relative;
+  background: #fff;
+  overflow: hidden;
+  height: 35px;
+  box-sizing: border-box;
+}
+
+#workspace-canvas {
+  overflow: auto;
+  background: #e3e3e3;
+  position: absolute;
+  bottom: 25px;
+  top: 35px;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+  transition: right 0.2s ease;
+}
+
+#workspace-canvas:focus {
+  outline: none;
+}
+
+.workspace-footer-button {
+  @include component-footer-button;
+}
+
+#workspace-footer {
+  @include component-footer;
+}
+@import "./nodes";
+
+#workspace-toolbar {
+  display: none;
+  color: $workspace-button-color;
+  font-size: 12px;
+  line-height: 18px;
+  position: absolute;
+  top: 35px;
+  left: 0;
+  right: 0;
+  padding: 7px;
+  height: 40px;
+  box-sizing: border-box;
+  background: #fff;
+  border-bottom: 1px solid $secondary-border-color;
+  white-space: nowrap;
+  transition: right 0.2s ease;
+  overflow: hidden;
+
+  .button {
+    @include workspace-button;
+    margin-right: 10px;
+    padding: 2px 8px;
+  }
+
+  .button-group {
+    @include disable-selection;
+
+    .button:first-child {
+      margin-right: 0;
+    }
+
+    &:not(.spinner-group) {
+      .button:not(:first-child) {
+        border-left: none;
+      }
+    }
+
+    .button.active {
+      background: $workspace-button-background-active;
+      cursor: default;
+    }
+  }
+
+  .spinner-value {
+    width: 25px;
+    color: $workspace-button-color;
+    padding: 0 5px;
+    display: inline-block;
+    text-align: center;
+    border-top: 1px solid $secondary-border-color;
+    border-bottom: 1px solid $secondary-border-color;
+    margin: 0;
+    height: 24px;
+    font-size: 12px;
+    background: #f9f9f9;
+    line-height: 22px;
+    box-sizing: border-box;
+  }
+}

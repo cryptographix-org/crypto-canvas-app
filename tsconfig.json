@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "lib": [ "es2015", "dom", "es2015.symbol" ],
+    "target": "es5"
+  },
+  "include": [
+    "./canvas/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "gulp",
+    "old",
+    "tmp",
+    "public",
+    "dist"
+  ]
+
+}
