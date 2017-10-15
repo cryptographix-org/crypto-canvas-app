@@ -68,7 +68,7 @@ export class LinkElement extends LinkInfo {
         var touch0 = d3.event.touches.item(0);
         var pos = [touch0.pageX, touch0.pageY];
 
-        canvas.state.startTouch(undefined, () => {
+        canvas.pointer.startTouch(undefined, () => {
           //showTouchMenu(obj, pos);
         });
       });
@@ -76,7 +76,7 @@ export class LinkElement extends LinkInfo {
     linkSelector.append("svg:path").attr("class", "link_outline link_path");
 
     linkSelector.append<SVGElement>("svg:path").attr("class", "link_line link_path")
-      .classed("link_link", function(d) { return !d.link });
+      .classed("link_link", function(d) { return d.link });
   }
 
   updateLink(thisElement: SVGElement, dirtyNode: boolean) {

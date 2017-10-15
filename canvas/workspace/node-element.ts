@@ -552,7 +552,7 @@ export class NodeElement extends NodeInfo {
 
     canvas.focusView();
 
-    canvas.state.nodeMouseDown(this);
+    canvas.pointer.nodeMouseDown(this);
 
     if (this.selected && (d3.event.ctrlKey || d3.event.metaKey)) {
       // Deselect Node
@@ -571,16 +571,16 @@ export class NodeElement extends NodeInfo {
           this.canvas.state.clearSelection();
         }
 
-        this.canvas.state.selectNodes([this]);
+        canvas.state.selectNodes([this]);
       }
 
-      this.canvas.state.deselectLinks();
+      canvas.state.deselectLinks();
 
       // Setup MOVING state ...
       if (d3.event.button != 2) {
         this.canvas.state.setMode(CanvasMode.MOVING);
 
-        var mouse = d3.touches(d3.event.target)[0] || d3.mouse(d3.event.target);
+        var mouse = canvas.pointer.eventToPoint(d3.event.target);
 
         // calculate mid-point, offset by touch/down position
         mouse[0] += this.x - this.w / 2;
@@ -596,7 +596,7 @@ export class NodeElement extends NodeInfo {
           node.dy = node.y - mouse[1];
         });
 
-        this.canvas.state.saveMousePosition(mouse);
+        canvas.pointer.setOriginPoint(mouse);
       }
     }
 
@@ -609,7 +609,7 @@ export class NodeElement extends NodeInfo {
   nodeMouseUp() {
     let canvas = this.canvas;
 
-    if (canvas.state.nodeMouseUp(this)) {
+    if (canvas.pointer.nodeMouseUp(this)) {
       // Double click detected ... s
       this.canvas.state.setMode(CanvasMode.IDLE);
 
@@ -636,6 +636,7 @@ export class NodeElement extends NodeInfo {
         buttonEnabled = this._def.button.enabled;
       }
     }
+
     return buttonEnabled;
   }
 
@@ -667,7 +668,7 @@ export class NodeElement extends NodeInfo {
     let canvas = this.canvas;
     let state = canvas.state;
 
-    state.nodeMouseDown(this);
+    canvas.pointer.nodeMouseDown(this);
     this.downPortType = portType;
     this.downPortIndex = portIndex || 0;
 
@@ -706,8 +707,8 @@ export class NodeElement extends NodeInfo {
             var hw = n.w / 2;
             var hh = n.h / 2;
 
-            return (n.x - hw < state.mousePosition[0] && n.x + hw > state.mousePosition[0] &&
-              n.y - hh < state.mousePosition[1] && n.y + hh > state.mousePosition[1]);
+            return (n.x - hw < canvas.pointer.mousePosition[0] && n.x + hw > canvas.pointer.mousePosition[0] &&
+              n.y - hh < canvas.pointer.mousePosition[1] && n.y + hh > canvas.pointer.mousePosition[1]);
           });
 
         nodes.each((n) => {
@@ -743,12 +744,12 @@ export class NodeElement extends NodeInfo {
             dst_port = drag_line.portIndex;
           }
 
-          let existingLink = state.graph.links.some((link) => {
+          let existingLink = state.links.some((link) => {
             return (link.source == src) && (link.target == dst) && (link.sourcePort == src_port);
           });
 
           if (!existingLink) {
-            let link = canvas.graph.addLink(src, src_port, dst, dst_port);
+            let link = canvas.state.addLink(src, src_port, dst, dst_port);
 
             canvas.state.selectLinks([link]);
           }
@@ -763,14 +764,14 @@ export class NodeElement extends NodeInfo {
           } else if (portType === PORT_TYPE_OUTPUT && this.inputs > 0) {
             canvas.showDragLines([{ node: this, port: 0, portType: PORT_TYPE_INPUT }]);
           } else {
-            canvas.state.resetMouse();
+            canvas.pointer.resetPointer();
           }
         }
         canvas.redraw();
         return;
       }
 
-      state.resetMouse();
+      canvas.pointer.resetPointer();
       canvas.hideDragLines();
       canvas.redraw();
     }

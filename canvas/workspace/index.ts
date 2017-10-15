@@ -25,6 +25,10 @@ export class Workspace extends Panel {
     $("#btn-zoom-zero").click(function() { actions.zoomViewport(0); });
     $("#btn-zoom-in").click(function() { actions.zoomViewport(+1); });
 
+    $("#canvas-zoom-out").click(function() { actions.zoomViewport(-1); });
+    $("#canvas-zoom-reset").click(function() { actions.zoomViewport(0); });
+    $("#canvas-zoom-in").click(function() { actions.zoomViewport(+1); });
+
     $("#btn-delete").click(function() { actions.deleteSelection(); });
     $("#btn-cut").click(function() { actions.copySelection(); actions.deleteSelection(); });
     $("#btn-copy").click(function() { actions.copySelection(); });
@@ -70,6 +74,14 @@ export class Workspace extends Panel {
     return `
     <!--div id='workspace-header' style='background-color: #AC57A0;'><span style='height:100%;'>&nbsp;**&nbsp;</span>
     </div-->
+    <div class="canvas-zoom clearfix designer_options">
+      <ul>
+        <li >
+        <button type="button" class="btn" title="Zoom In" id="canvas-zoom-in" >
+        <i class="material-icons" >add</i></button></li>
+        <li ><button type="button" class="btn" id="canvas-zoom-out" title="Zoom Out" >
+        <i class="material-icons" data-eventmap="canvas-zoom-out" >remove</i></button></li>
+        <li ><button type="button" class="btn" id="canvas-zoom-reset" title="Reset Viewport" ><i class="material-icons reset" ></i></button></li></ul></div>
     <div id='workspace-canvas' style='background-color: #0E1331; top: 0px;'>
     </div>
     <div id='workspace-footer' style='background-color: #0E1331; display: flex; '>
@@ -122,7 +134,7 @@ export class Workspace extends Panel {
         </a>
       </div>
     </div>
-    <div id='workspace-toolbar' style='background-color: rgb(2, 128, 105); display: block;     border-bottom: 1px solid #bbbbbb;'>
+    <div id='workspace-toolbar' style='background-color: rgb(2, 128, 105); display: block;     border-bottom: 1px solid #bbbbbb; top: 0px;'>
       <a class="button" id="workspace-subflow-edit" href="#" data-i18n="[append]subflow.editSubflowProperties"><i class="fa fa-pencil"></i> edit properties</a><span style="margin-left: 5px;" data-i18n="subflow.input">inputs:</span> <div style="display: inline-block;" class="button-group"><a id="workspace-subflow-input-remove" class="button" href="#">0</a><a id="workspace-subflow-input-add" class="button active" href="#">1</a></div><span style="margin-left: 5px;" data-i18n="subflow.output">outputs:</span> <div id="workspace-subflow-output" style="display: inline-block;" class="button-group spinner-group"><a id="workspace-subflow-output-remove" class="button" href="#"><i class="fa fa-minus"></i></a><div class="spinner-value">6</div><a id="workspace-subflow-output-add" class="button" href="#"><i class="fa fa-plus"></i></a></div><a class="button" id="workspace-subflow-delete" href="#" data-i18n="[append]subflow.deleteSubflow"><i class="fa fa-trash"></i> delete subflow</a>
     </div>`;
   }

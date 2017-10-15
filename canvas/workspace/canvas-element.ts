@@ -1,9 +1,8 @@
-import { CanvasState, CanvasMode } from './canvas-state';
+import { PointerHelper } from './pointer-helper';
+import { CanvasState, CanvasMode, getTestGraph } from './canvas-state';
 import { CanvasActions } from './canvas-actions';
 import { NodeElement, NodeInfo, PORT_TYPE_OUTPUT, PORT_TYPE_INPUT, node_width, node_height } from './node-element';
 import { LinkElement, LinkInfo } from './link-element';
-
-import { GraphStore, getTestGraphStore } from './graph-store';
 
 import * as d3 from 'd3';
 import * as $ from 'jquery';
@@ -18,8 +17,6 @@ const space_width = 5000,
 export class CanvasElement {
   private element: HTMLElement;
 
-  public graph: GraphStore;
-
   private outer: D3Selection;
   public vis: D3Selection;
   private outer_background: D3Selection;
@@ -27,6 +24,7 @@ export class CanvasElement {
   private dragGroup: D3Selection;
 
   public readonly state: CanvasState;
+  public readonly pointer: PointerHelper = new PointerHelper();
 
   public snapGrid: boolean = false;
   public gridSize: number = 20;
@@ -70,10 +68,10 @@ export class CanvasElement {
     if (!type)
       type = $(evt.fromElement).find('.palette_label').text();
 
-    var nn = this.graph.addNode(type);
+    var nn = this.state.addNode(type);
 
-    var helperOffset = d3.touches(this.dropHelper)[0] || d3.mouse(this.dropHelper);
-    var mousePos = d3.touches(target)[0] || d3.mouse(target);
+    var helperOffset = this.pointer.eventToPoint(this.dropHelper);
+    var mousePos = this.pointer.eventToPoint(target);
 
     mousePos[1] += target.scrollTop + ((nn.h / 2) - helperOffset[1]);
     mousePos[0] += target.scrollLeft + ((nn.w / 2) - helperOffset[0]);
@@ -100,10 +98,7 @@ export class CanvasElement {
   constructor(me: HTMLElement) {
     this.element = me;
 
-    //this.graph = new GraphStore(this);
-    this.graph = getTestGraphStore(this);
-
-    var state = this.state = new CanvasState(this.graph);
+    this.state = new CanvasState(this, getTestGraph());
 
     this.actions = new CanvasActions(this);
 
@@ -111,9 +106,6 @@ export class CanvasElement {
 
     this.updateGrid();
     this.grid.style("visibility", "visible");
-
-    /*    this.vis.selectAll<SVGElement, NodeElement>(".nodegroup")
-          .each((n) => { n.dirty = true; });*/
 
     this.redraw();
   }
@@ -144,7 +136,9 @@ export class CanvasElement {
   }
 
   mouseDown(target: d3.ContainerElement) {
-    var point = d3.mouse(target);
+    let pointer = this.pointer;
+
+    var point = this.pointer.eventToPoint(target);
 
     let state = this.state;
 
@@ -154,8 +148,8 @@ export class CanvasElement {
     }
 
     if (state.inMode(CanvasMode.IDLE) && !(d3.event.metaKey || d3.event.ctrlKey)) {
-      if (!state.touchStarted) {
-        state.saveMousePosition(point);
+      if (!pointer.touchStarted) {
+        pointer.setOriginPoint(point);
 
         this.beginLasso(point);
         d3.event.preventDefault();
@@ -170,14 +164,14 @@ export class CanvasElement {
   }
 
   mouseMove(target: d3.ContainerElement) {
-    let x = d3.event;
-    var point = d3.touches(target)[0] || d3.mouse(target);
+    var point = this.pointer.eventToPoint(target);
 
     var node;
 
     let state = this.state;
 
-    let mousePos = state.setMousePosition(point);
+    let mousePos = this.pointer.setMousePosition(point);
+
     //console.log(point);
     // Prevent touch scrolling...
     //if (d3.touches(this)[0]) {
@@ -195,7 +189,7 @@ export class CanvasElement {
       return;
     }
 
-    if (this.state.inMode(CanvasMode.JOINING) && state.mouseDownNode) {
+    if (state.inMode(CanvasMode.JOINING) && this.pointer.mouseDownNode) {
 
       if (state.dragLinks.length === 0) {
         this.beginJoin();
@@ -212,19 +206,18 @@ export class CanvasElement {
 
     if (this.state.inMode(CanvasMode.MOVING)) {
 
-      if (!state.isMouseDown)
-        state.saveMousePosition(mousePos);
+      if (!this.pointer.hasOriginPoint)
+        this.pointer.setOriginPoint(mousePos);
 
       // let mousePos = d3.mouse(document.body);
       // if (isNaN(mousePos[0])) {
       //   mousePos = d3.touches(document.body)[0];
       // }
 
-      var d = (state.mouseDownPoint[0] - mousePos[0]) * (state.mouseDownPoint[0] - mousePos[0])
-        + (state.mouseDownPoint[1] - mousePos[1]) * (state.mouseDownPoint[1] - mousePos[1]);
+      let d = this.pointer.distanceFromOrigin(mousePos);
 
       console.log(mousePos);
-      console.log(state.mouseDownPoint);
+      console.log(this.pointer.originPoint);
 
       if (d > 3) {
         state.setMode(CanvasMode.MOVING_ACTIVE);
@@ -232,7 +225,7 @@ export class CanvasElement {
       }
     }
     else if (state.inModes([CanvasMode.MOVING_ACTIVE, CanvasMode.IMPORT_DRAGGING])) {
-      let mousePos = state.mousePosition;
+      let mousePos = this.pointer.mousePosition;
 
       var minX = 0;
       var minY = 0;
@@ -328,7 +321,7 @@ export class CanvasElement {
       }
     }
 
-    this.state.resetMouse();
+    this.pointer.resetPointer();
     this.redraw();
   }
 
@@ -393,7 +386,7 @@ export class CanvasElement {
   beginJoin() {
     let state = this.state;
 
-    let downNode = state.mouseDownNode;
+    let downNode = this.pointer.mouseDownNode;
 
     // detach wires?
     if (d3.event.shiftKey) {
@@ -403,7 +396,7 @@ export class CanvasElement {
       // Get all the wires we need to detach.
 
       // Scope search to ALL or SELECTED
-      let links = state.graph.links;
+      let links = state.links;
       if (state.selectedLinks.size)
         links = Array.from(state.selectedLinks.values());
 
@@ -423,7 +416,7 @@ export class CanvasElement {
       for (let i = 0; i < existingLinks.length; i++) {
         let link = existingLinks[i];
 
-        state.graph.deleteLinks([link]);
+        state.deleteLinks([link]);
 
         lines.push({
           link: link,
@@ -434,7 +427,7 @@ export class CanvasElement {
       }
 
       if (links.length === 0) {
-        state.resetMouse();
+        this.pointer.resetPointer();
         this.redraw();
       } else {
         this.showDragLines(lines);
@@ -552,7 +545,7 @@ export class CanvasElement {
     if (!this.state.inMode(CanvasMode.JOINING)) {
 
       let nodes = this.vis.selectAll<SVGElement, NodeElement>(".nodegroup")
-        .data(this.graph.nodes, (d) => d ? d.id : null);
+        .data(this.state.nodes, (d) => d ? d.id : null);
 
       var dirtyNodes = {};
 
@@ -584,7 +577,7 @@ export class CanvasElement {
       });
 
       var links = this.vis.selectAll<SVGElement, LinkInfo>(".link")
-        .data(this.graph.links, (link) => link ? link.id : null);
+        .data(this.state.links, (link) => link ? link.id : null);
 
       // Delete the missing ones
       links.exit().remove();

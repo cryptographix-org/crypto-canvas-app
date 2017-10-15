@@ -1,11 +1,16 @@
 const path = require( 'path' );
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
   entry: {
-    app: './canvas/index.ts'
+    app: './canvas/index.ts',
+    vendor: [
+      'jquery','jqueryui','d3'
+    ],
+//    cgx: [ '@cryptographix/sim-core' ],
   },
   devtool: 'inline-source-map',
   module: {
@@ -14,18 +19,6 @@ module.exports = {
       use: 'ts-loader',
       exclude: /node_modules/
     },
-/*    {
-      test: /\.scss$/,
-      use: [{
-          loader: "style-loader" // creates style nodes from JS strings
-      },
-      {
-          loader: "css-loader" // translates CSS into CommonJS
-      },
-      {
-          loader: "sass-loader" // compiles Sass to CSS
-      }]
-    },*/
     {
       test: /\.scss$/,
       use: ExtractTextPlugin.extract({
@@ -49,15 +42,26 @@ module.exports = {
     } ),
     new CleanWebpackPlugin(['dist']),
     new ExtractTextPlugin({
-        filename: "[name].css" /*".[contenthash].css",
+        filename: "[name]-[contenthash].css" /*".[contenthash].css",
         disable: process.env.NODE_ENV === "development"*/
-    })
+    }),
+    //new webpack.HashedModuleIdsPlugin(),
+    new webpack.NamedModulesPlugin(),
+    /*new webpack.optimize.CommonsChunkPlugin({
+       name: 'cgx'
+    }),*/
+    new webpack.optimize.CommonsChunkPlugin({
+       name: 'vendor'
+    }),
+    /*new webpack.optimize.CommonsChunkPlugin({
+       name: 'runtime'
+    }),*/
   ],
   resolve: {
     extensions: [ ".ts", ".js" ]
   },
   output: {
-    filename: '[name].bundle.js',
+    filename: '[name]-[chunkhash].js',
     path: path.resolve( __dirname, 'dist' )
   }
 };

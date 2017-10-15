@@ -2,7 +2,7 @@ import { CanvasElement } from './canvas-element';
 import { CanvasMode } from './canvas-state';
 import { NodeElement } from './node-element';
 import { LinkElement } from './link-element';
-import { NodeMap, LinkMap } from './graph-store';
+import { NodeMap, LinkMap } from './canvas-state';
 
 export class CanvasActions {
   canvas: CanvasElement;
@@ -47,7 +47,7 @@ export class CanvasActions {
 
       let nodes = Array.from<NodeElement>(this.clipNodes.values());
 
-      state.graph.getLinksForNodes(nodes).forEach((link) => {
+      state.getLinksForNodes(nodes).forEach((link) => {
         link = new LinkElement(this.canvas, link);
 
         if (this.clipNodes.get(link.source.id))
@@ -72,15 +72,15 @@ export class CanvasActions {
     let nodes = Array.from<NodeElement>(this.clipNodes.values());
     let links = this.clipLinks;
 
-    state.graph.importNodes(nodes, links);
+    state.importNodes(nodes, links);
     state.selectNodes(nodes);
 
     if (this.clipNodes.size > 0)
       state.selectLinks(this.clipLinks);
 
     state.setMode(CanvasMode.IMPORT_DRAGGING);
-    if (!state.isMouseDown)
-      state.saveMousePosition([0, 0]);
+    if (!this.canvas.pointer.hasOriginPoint)
+      this.canvas.pointer.setOriginPoint([0, 0]);
 
     this.canvas.redraw();
   }
@@ -92,7 +92,7 @@ export class CanvasActions {
     if (selNodes.size) {
       let nodes = Array.from<NodeElement>(selNodes.values());
 
-      state.graph.deleteNodes(nodes);
+      state.deleteNodes(nodes);
 
       state.deselectNodes();
     }
@@ -101,7 +101,7 @@ export class CanvasActions {
     if (selLinks.size) {
       let links = Array.from<LinkElement>(selLinks.values());
 
-      this.canvas.graph.deleteLinks(links);
+      state.deleteLinks(links);
 
       state.deselectLinks();
     }
