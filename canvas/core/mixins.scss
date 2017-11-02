@@ -82,13 +82,14 @@
         outline: 1px solid $workspace-button-color-focus-outline;
     }
 }
+/*
 .button-group-vertical {
     display: inline-block;
     vertical-align: middle;
 }
 .button-group:not(:last-child) {
     margin-right: 10px;
-}
+}*/
 
 
 @mixin workspace-button-toggle {

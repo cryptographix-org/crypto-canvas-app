@@ -1,62 +1,60 @@
-body {
-  font-size: 14px;
-  font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
-//  padding-top: 100px;
-  background: #f3f3f3;
-  line-height: 20px;
-  margin: 0;
-}
+@import "../core/layout";
+@import "../core/colours";
+@import "../core/mixins";
 
 #header {
-  position: absolute;
-  top: 0;
-  left: 0;
+  display: block;
+
+  position: fixed;
+  top: 0; left: 0;
   width: 100%;
-  height: 40px;
-  background: #000;
-  box-sizing: border-box;
-  padding: 0px 0px 0px 20px;
-  color: #C7C7C7;
-  font-size: 14px;
+  height: $app-bar-height;
+
+  z-index: 22;
 }
 
 #main-container {
+  display: block;
+
   position: absolute;
-  top: 40px;
+
+  top: $app-bar-height;
   left: 0;
   bottom: 0;
   right: 0;
+
   overflow: hidden;
 }
 
 #workspace {
+  display: block;
+
   position: absolute;
-  margin: 0;
   top: 0px;
-  left: 179px;
+  left: $palette-width;
   bottom: 0px;
-  right: 322px;
+  right: $sidebar-width;
+
   overflow: hidden;
-  border: 1px solid #bbb;
-  box-sizing: border-box;
+
+  @include component-border;
   transition: left 0.2s ease-in-out;
 }
 
 #palette {
+  display: block;
+
   position: absolute;
   top: 0px;
+  left:0px;
   bottom: 0px;
-  left: 0px;
-  background: #f3f3f3;
-  width: 180px;
-  text-align: center;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  border: 1px solid #bbb;
-  box-sizing: border-box;
+  width: $palette-width;
+
+  background: $background-color;
+
+  @include disable-selection;
+  @include component-border;
+
   transition: width 0.2s ease-in-out;
 }
 
@@ -78,8 +76,8 @@ body {
   top: 0px;
   right: 0px;
   bottom: 0px;
-  width: 315px;
-  background: #fff;
+  width: $sidebar-width - 7px;
+  background: $background-color;
   box-sizing: border-box;
   z-index: 10;
   border: 1px solid #bbb;

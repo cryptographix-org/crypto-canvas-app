@@ -1,3 +1,4 @@
+import { ComponentDefinition } from '@shared';
 import { CanvasElement } from './canvas-element';
 import { NodeElement, NodeInfo } from './node-element';
 import { LinkElement, LinkInfo } from './link-element';
@@ -186,7 +187,7 @@ export class CanvasState {
     }
   }
 
-  addNode(nodeType: string, attr?: any): NodeElement {
+  addNode(defn: ComponentDefinition, attr?: any): NodeElement {
     let newID;
 
     do {
@@ -197,16 +198,21 @@ export class CanvasState {
       id: newID,
       x: 0,
       y: 0,
-      icon_url: undefined,
-      description: nodeType,
+      icon_url: defn.meta.iconURL,
+      description: defn.name,
       _def: {
         colour: "#5a8",
-        button: true,
-      }
+        button: false,
+        icon: defn.meta.iconURL,
+        inputs: 2,
+        outputs: 1,
+      },
+      inputs: 2,
+      outputs: 1,
     });
     this.nodeMap.set(node.id, node);
 
-    node.calculateSize(false, nodeType);
+    node.calculateSize(false, defn.name);
 
     return node;
   }

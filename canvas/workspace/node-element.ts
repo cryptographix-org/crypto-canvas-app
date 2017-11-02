@@ -71,7 +71,7 @@ export class NodeElement extends NodeInfo {
       this.w = Math.max(node_width, 20 * (Math.ceil((calculateTextWidth(label, "node_label", 50) + (this._def.inputs > 0 ? 7 : 0)) / 20)));
     }
 
-    this.h = Math.max(node_height, (this.outputs || 0) * 15);
+    this.h = Math.max(node_height, (this.outputs || 0) * 2 * 15);
   }
 
   renderButton(nodeSelector: NodeSelector) {

@@ -1,3 +1,57 @@
+/**
+ * Use 'bootstrap 4 reboot' as base
+ *
+ * Define essential variables for reboot.css, then import it.
+**/
+
+$font-family-sans-serif:      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
+$font-family-monospace:       "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
+$font-family-base:            $font-family-sans-serif !default;
+
+$font-size-base:              1rem !default; // Assumes the browser default, typically `16px`
+$font-size-lg:                ($font-size-base * 1.25) !default;
+$font-size-sm:                ($font-size-base * .875) !default;
+
+$font-weight-light:           300 !default;
+$font-weight-normal:          400 !default;
+$font-weight-bold:            700 !default;
+
+$font-weight-base:            $font-weight-normal !default;
+$line-height-base:            1.5 !default;
+
+$h1-font-size:                $font-size-base * 2.5 !default;
+$h2-font-size:                $font-size-base * 2 !default;
+$h3-font-size:                $font-size-base * 1.75 !default;
+$h4-font-size:                $font-size-base * 1.5 !default;
+$h5-font-size:                $font-size-base * 1.25 !default;
+$h6-font-size:                $font-size-base !default;
+
+
+$spacer: 1rem !default;
+
+@import './colours.scss';
+$body-color: $cgx-dark-blue;
+$body-bg: $cgx-light-grey;
+
+$headings-margin-bottom:      ($spacer / 2) !default;
+$headings-font-family:        inherit !default;
+$headings-font-weight:        500 !default;
+$headings-line-height:        1.2 !default;
+$headings-color:              inherit !default;
+
+$paragraph-margin-bottom:   1rem !default;
+$dt-font-weight: 100;
+$link-decoration: none;
+$link-hover-color: #fff;
+$link-hover-decoration: none;
+
+$table-cell-padding: 0;
+$text-muted: 0;
+
+@import './reboot.scss';
+
+@import './layout.scss';
+
 .hide {
   display: none;
 }

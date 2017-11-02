@@ -1,4 +1,5 @@
 import { Graph } from '@cryptographix/sim-core';
+import { ComponentLibrary } from '@shared';
 
 export class ProjectMetadata {
 
@@ -14,16 +15,13 @@ export class ProjectMetadata {
  *   a Story
 **/
 export class Project {
-  public origin: string;
 
-  private library: boolean;
+  private library: ComponentLibrary;
   private graph: Graph;
   private changed: boolean;
 
-  constructor(origin: string) {
-    this.origin = origin;
-
-    this.library = false;
+  constructor(public origin: URL) {
+    //this.library = new ComponentLibrary();
 
     this.setGraph(new Graph(null));
 
@@ -36,7 +34,7 @@ export class Project {
     //    graph.subscribe( Graph.)
   }
 
-  static fromJSON(origin: string, data: {}): Project {
+  static fromJSON(origin: URL, data: {}): Project {
     let project = new Project(origin);
 
     return project;
@@ -50,8 +48,8 @@ export class Project {
     return this.graph;
   }
 
-  get isLibrary() {
-    return this.library;
+  get isLibrary(): boolean {
+    return !!this.library;
   }
 
   get hasChanged() {

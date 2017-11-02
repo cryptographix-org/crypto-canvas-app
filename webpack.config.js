@@ -58,10 +58,20 @@ module.exports = {
     }),*/
   ],
   resolve: {
-    extensions: [ ".ts", ".js" ]
+    extensions: [ ".ts", ".js" ],
+    alias: {
+      "@shared": path.resolve(__dirname, "./shared")
+    },
   },
   output: {
     filename: '[name]-[chunkhash].js',
-    path: path.resolve( __dirname, 'dist' )
+    path: path.resolve( __dirname, 'dist' ),
+    publicPath: "/"
+  },
+  devServer: {
+    contentBase: "./public/",
+    //quiet: true,
+    //clientLogLevel: "info",
+    headers: { "X-Custom-Header": "yes" }
   }
 };

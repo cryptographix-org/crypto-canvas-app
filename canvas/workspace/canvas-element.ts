@@ -1,3 +1,4 @@
+import { Workspace } from '.';
 import { PointerHelper } from './pointer-helper';
 import { CanvasState, CanvasMode, getTestGraph } from './canvas-state';
 import { CanvasActions } from './canvas-actions';
@@ -60,15 +61,27 @@ export class CanvasElement {
     this.dragGroup = vis.append("g");
   }
 
-  dropHelper: any;
+  dropHelper: HTMLElement;
+  saveDropHelper(helper: HTMLElement) {
+    // Save drag origem
+    this.dropHelper = helper;
+    let data = $(this.dropHelper).data('component-id');
+    console.log(data);
+  }
+
   dropNode(target) {
     let evt = d3.event;
 
-    let type = $(evt.relatedTarget).find('.palette_label').text();
+    let type = $(evt.relatedTarget).find('.palette-node-name').text();
     if (!type)
-      type = $(evt.fromElement).find('.palette_label').text();
+      type = $(evt.fromElement).find('.palette-node-name').text();
 
-    var nn = this.state.addNode(type);
+    let data = $(this.dropHelper).data('component-id');
+    console.log(data);
+
+    let defn = this.workspace.registry.getByID(data);
+
+    var nn = this.state.addNode(defn);
 
     var helperOffset = this.pointer.eventToPoint(this.dropHelper);
     var mousePos = this.pointer.eventToPoint(target);
@@ -95,8 +108,8 @@ export class CanvasElement {
     this.redraw();
   }
 
-  constructor(me: HTMLElement) {
-    this.element = me;
+  constructor(public workspace: Workspace, element: HTMLElement) {
+    this.element = element;
 
     this.state = new CanvasState(this, getTestGraph());
 
@@ -108,6 +121,29 @@ export class CanvasElement {
     this.grid.style("visibility", "visible");
 
     this.redraw();
+
+    // Handle nodes dragged from the palette
+    let canvas = this;
+    $(this.element).droppable({
+      accept: ".palette-node",
+      drop: function(event, ui: JQueryUI.DroppableEventUIParam) {
+        let me = ((event as any).originalEvent).originalEvent as MouseEvent;
+
+        let p: MouseEventInit = Object.assign({}, {
+          clientX: ui.position.left,
+          clientY: ui.position.top,
+          relatedTarget: ui.draggable.get(0),
+        } as {});
+
+        canvas.saveDropHelper(ui.helper.get(0));
+
+        // Send me a 'dropped' event, so that D3 can handle mouse position
+        let evt = new MouseEvent('dropped', p);
+        d3.select(canvas.element).select<HTMLElement>('.innerCanvas').node().dispatchEvent(evt);
+
+        return true;
+      }
+    });
   }
 
   public actions: CanvasActions;

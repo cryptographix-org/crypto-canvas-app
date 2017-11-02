@@ -1,11 +1,13 @@
+require('./canvas-app.scss');
+
 import { Header } from './header';
 import { Workspace } from './workspace';
 import { Palette } from './palette';
 import { Sidebar } from './sidebar';
 import { Separator } from './separator';
+import { ComponentRegistry } from '@shared';
 
 declare function require(name: string): string;
-require('./canvas-app.scss');
 
 import * as $ from 'jquery';
 
@@ -16,10 +18,12 @@ export class CanvasApp {
   private sidebar: Sidebar;
   private separator: Separator;
 
+  public registry: ComponentRegistry = new ComponentRegistry();
+
   constructor(body: JQuery) {
     this.header = new Header(body.find('#header')[0]);
-    this.workspace = new Workspace(body.find('#workspace')[0]);
-    this.palette = new Palette(body.find('#palette')[0]);
+    this.workspace = new Workspace(this.registry, body.find('#workspace')[0]);
+    this.palette = new Palette(body.find('#palette')[0], this.registry);
     this.sidebar = new Sidebar(body.find('#sidebar')[0]);
     this.separator = new Separator(body.find('#sidebar-separator')[0], this.workspace, this.sidebar);
 

@@ -2,6 +2,7 @@ import { Panel } from '../core';
 import { CanvasElement } from './canvas-element';
 import { NodeElement, NodeInfo } from './node-element';
 import { LinkElement, LinkInfo } from './link-element';
+import { ComponentRegistry } from '@shared';
 
 import * as d3 from 'd3';
 import * as $ from 'jquery';
@@ -13,11 +14,11 @@ require('./workspace.scss');
 export class Workspace extends Panel {
   canvas: CanvasElement;
 
-  constructor(me: HTMLElement) {
-    super(me);
+  constructor(public registry: ComponentRegistry, element: HTMLElement, ) {
+    super(element);
 
-    let canvasEl = $(me).find('#workspace-canvas')[0];
-    var canvas = this.canvas = new CanvasElement(canvasEl);
+    let canvasEl = $(element).find('#workspace-canvas')[0];
+    var canvas = this.canvas = new CanvasElement(this, canvasEl);
 
     let actions = canvas.actions;
 
@@ -47,27 +48,6 @@ export class Workspace extends Panel {
       }
     });
 
-    // Handle nodes dragged from the palette
-    $(canvasEl).droppable({
-      accept: ".palette_node",
-      drop: function(event, ui: JQueryUI.DroppableEventUIParam) {
-        let me = ((event as any).originalEvent).originalEvent as MouseEvent;
-
-        let p: MouseEventInit = Object.assign({}, {
-          clientX: ui.position.left,
-          clientY: ui.position.top,
-          relatedTarget: ui.draggable.get(0),
-        } as {});
-
-        canvas.dropHelper = ui.helper.get(0);
-
-        let evt = new MouseEvent('dropped', p);
-        d3.select(canvasEl).select<HTMLElement>('.innerCanvas').node().dispatchEvent(evt);
-
-        return true;
-      }
-    });
-
   }
 
   getTemplate(): string {
@@ -84,7 +64,7 @@ export class Workspace extends Panel {
         <li ><button type="button" class="btn" id="canvas-zoom-reset" title="Reset Viewport" ><i class="material-icons reset" ></i></button></li></ul></div>
     <div id='workspace-canvas' style='background-color: #0E1331; top: 0px;'>
     </div>
-    <div id='workspace-footer' style='background-color: #0E1331; display: flex; '>
+    <!--div id='workspace-footer' style='background-color: #0E1331; display: flex; '>
       <div style='position: absolute; left: 0px;'>
         <a id="btn-palette-toggle" class="sidebar-toggle-container" href="#" style="left: 2px;" >
           <i class="fa fa-angle-double-left" style="top: 2px; left: 0px; "></i>
@@ -133,9 +113,9 @@ export class Workspace extends Panel {
           <i class="fa fa-angle-double-left hide" style="top: 2px; left: 0px;"></i>
         </a>
       </div>
-    </div>
-    <div id='workspace-toolbar' style='background-color: rgb(2, 128, 105); display: block;     border-bottom: 1px solid #bbbbbb; top: 0px;'>
+    </div-->
+    <!--div id='workspace-toolbar' style='background-color: rgb(2, 128, 105); display: block;     border-bottom: 1px solid #bbbbbb; top: 0px;'>
       <a class="button" id="workspace-subflow-edit" href="#" data-i18n="[append]subflow.editSubflowProperties"><i class="fa fa-pencil"></i> edit properties</a><span style="margin-left: 5px;" data-i18n="subflow.input">inputs:</span> <div style="display: inline-block;" class="button-group"><a id="workspace-subflow-input-remove" class="button" href="#">0</a><a id="workspace-subflow-input-add" class="button active" href="#">1</a></div><span style="margin-left: 5px;" data-i18n="subflow.output">outputs:</span> <div id="workspace-subflow-output" style="display: inline-block;" class="button-group spinner-group"><a id="workspace-subflow-output-remove" class="button" href="#"><i class="fa fa-minus"></i></a><div class="spinner-value">6</div><a id="workspace-subflow-output-add" class="button" href="#"><i class="fa fa-plus"></i></a></div><a class="button" id="workspace-subflow-delete" href="#" data-i18n="[append]subflow.deleteSubflow"><i class="fa fa-trash"></i> delete subflow</a>
-    </div>`;
+    </div-->`;
   }
 }

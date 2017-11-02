@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": "canvas",
     "outDir": "./dist/",
     "noImplicitAny": false,
     "sourceMap": true,
@@ -8,9 +9,12 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "lib": [ "es2015", "dom", "es2015.symbol" ],
-    "target": "es5"
+    "target": "es5",
+    "paths": {
+      "@shared": ["../shared/"],
+    },
   },
-  "include": [
+  "xinclude": [
     "./canvas/**/*",
     "./shared/**/*"
   ],
@@ -20,7 +24,8 @@
     "old",
     "tmp",
     "public",
-    "dist"
+    "dist",
+    "packs"
   ]
 
 }
