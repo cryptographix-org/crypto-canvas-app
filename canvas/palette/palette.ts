@@ -22,6 +22,9 @@ export class Palette extends Panel {
   constructor(public me: HTMLElement, public registry: ComponentRegistry) {
     super(me);
 
+    $('#palette-hide').click(() => { $('#palette').removeClass('expanded'); });
+    $('#palette-show').click(() => { $('#palette').addClass('expanded'); });
+
     $('#palette-collapse-all').click(() => { this.showCategory($(me).find('.palette-category'), false); });
     $('#palette-expand-all').click(() => { this.showCategory($(me).find('.palette-category'), true); });
 
@@ -30,6 +33,7 @@ export class Palette extends Panel {
     })
 
     this.refreshPalette();
+    $('#palette').addClass('expanded');
   }
 
   makeDraggable(el) {
@@ -173,19 +177,20 @@ export class Palette extends Panel {
           contentEl.append(`
 <li id="palette_node_${compactName}" title="${comp.description}" class="palette-node">
   <a class="clearfix" title="${comp.description}">
-    <span class="mrm mtm" style="height: 30px">&nbsp;</span>
+    <span class="" style="width: 10px"></span>
     <span class="inline-block mrm mtm">
       <svg width="10" height="30" fill="#cecece" version="1.1"><rect x="0" y="0" width="3" height="3"></rect><rect x="6" y="0" width="3" height="3"></rect><rect x="0" y="8" width="3" height="3"></rect><rect x="6" y="8" width="3" height="3"></rect><rect x="0" y="16" width="3" height="3"></rect><rect x="6" y="16" width="3" height="3"></rect><rect x="0" y="24" width="3" height="3"></rect><rect x="6" y="24" width="3" height="3"></rect></svg>
     </span>
     <span class="palette-icon icon-24" style="background-image: url(${comp.meta.iconURL})">
     </span>
-    <span class="palette-node-name nova-semibold" title="${comp.description}">${comp.name}</span>
+    <span class="palette-node-name" title="${comp.description}">${comp.name}</span>
   </a>
 </li>`);
 
           el = contentEl.find('#palette_node_' + compactName);
 
           el.data('component-id', comp.id);
+          el.click((evt) => { evt.preventDefault(); })
 
           this.makeDraggable(el);
         }
@@ -213,7 +218,7 @@ export class Palette extends Panel {
       categoryEl = palette.find('#palette-container-' + category);
 
       // Make 'openable/closeable'
-      categoryEl.click((a) => {
+      categoryEl.find('.palette-header').click((a) => {
         this.showCategory(categoryEl, !categoryEl.hasClass('palette-open'));
       });
     }
@@ -247,20 +252,34 @@ export class Palette extends Panel {
 
   getTemplate(): string {
     return `
+<span class="button-collapse">
+  <i id="palette-hide" class="material-icons expand-icon">&#xE31C;</i>
+  <a id="palette-show">
+    <i class="material-icons">&#xE31C;</i>
+    <span>Palette</span>
+  </a>
+</span>
+
 <img src="red/images/spin.svg" class="palette-spinner hide" style="display: none;">
 <div id="palette-search" class="palette-search">
-  <div class="red-ui-searchBox-container"><i class="fa fa-search"></i><input type="text" data-i18n="[placeholder]palette.filter" placeholder="filter nodes"><a href="#"><i class="fa fa-times"></i></a><span class="red-ui-searchBox-resultCount hide"></span></div>
+  <div class="palette-search-container">
+    <i class="fa fa-search"></i>
+    <input type="text" data-i18n="[placeholder]palette.filter" placeholder="filter">
+    <a href="#"><i class="fa fa-times"></i></a>
+    <span class="palette-search-results hide"></span>
+  </div>
 </div>
-<ul id="palette-container" class="palette-scroll category-list">
+
+<ul id="palette-container" class="category-list">
 </ul>
-<div id="palette-footer"><div>
+<!--div id="palette-footer"><div>
   <a class="palette-button" id="palette-collapse-all" href="#">
   <i class="fa fa-angle-double-up"></i>
   </a>
   <a class="palette-button" id="palette-expand-all" href="#">
   <i class="fa fa-angle-double-down"></i>
   </a>
-</div></div>
+</div></div-->
 <div id="palette-shade" class="hide" style="display: none;"></div>
 
 <!--div class="floating-menu-wrap expanded" style="background-color: #eee !important;">

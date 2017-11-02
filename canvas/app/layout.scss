@@ -30,32 +30,15 @@
   display: block;
 
   position: absolute;
-  top: 0px;
-  left: $palette-width;
-  bottom: 0px;
+  top: 0;
+  left: 0; //$palette-width;
+  bottom: 0;
   right: $sidebar-width;
 
   overflow: hidden;
 
   @include component-border;
   transition: left 0.2s ease-in-out;
-}
-
-#palette {
-  display: block;
-
-  position: absolute;
-  top: 0px;
-  left:0px;
-  bottom: 0px;
-  width: $palette-width;
-
-  background: $background-color;
-
-  @include disable-selection;
-  @include component-border;
-
-  transition: width 0.2s ease-in-out;
 }
 
 #palette-shade,

@@ -55,3 +55,36 @@ $text-muted: 0;
 .hide {
   display: none;
 }
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url(/static/fonts/MaterialIcons-Regular.woff2) format('woff2'),
+    url(/static/fonts/MaterialIcons-Regular.woff) format('woff'),
+    url(/static/fonts/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 24px;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    line-height: 1;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.material-icons, button, select {
+    text-transform: none;
+}

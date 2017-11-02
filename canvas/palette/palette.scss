@@ -5,54 +5,104 @@
 @import "../core/colours";
 @import "../core/mixins";
 
-.red-ui-searchBox-container {
-  position: relative; }
-  .red-ui-searchBox-container i {
-    font-size: 10px;
-    color: #666; }
-  .red-ui-searchBox-container i.fa-search {
-    position: absolute;
-    pointer-events: none;
-    left: 8px;
-    top: 9px; }
-  .red-ui-searchBox-container i.fa-times {
-    position: absolute;
-    right: 5px;
-    top: 9px; }
-  .red-ui-searchBox-container input {
-    border-radius: 0;
-    border: none;
-    width: 100%;
-    box-shadow: none;
-    -webkit-box-shadow: none;
-    padding: 3px 17px 3px 22px;
-    margin: 0px;
-    height: 30px;
-    box-sizing: border-box;
-    }
-    .red-ui-searchBox-container input:focus {
-      border: none;
-      box-shadow: none;
-      -webkit-box-shadow: none; }
-  .red-ui-searchBox-container a {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
+#palette {
+  display: block;
+
+  // expanded ...
+  position: fixed;
+  top: $app-bar-height + 20;
+  left: 11px;
+  bottom: 40px;
+  width: $palette-width;
+  z-index: 1;
+  padding: 0;
+
+  &:not(.expanded) {
+    left: -20px;
     width: 20px;
-    display: none; }
-  .red-ui-searchBox-container .red-ui-searchBox-resultCount {
+    padding: 15px;
+
+    #palette-search, .palette-category, .palette-container {
+      display: none;
+    }
+  }
+
+  background-color: $cgx-clear-blue;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+
+  @include disable-selection;
+//  @include component-border;
+
+  transition: left 0.6s ease-in-out;
+  //transition: width 0.6s ease-in-out;
+
+  .button-collapse {
     position: absolute;
-    right: 18px;
-    top: 4px;
-    background: #eee;
-    color: #666;
-    padding: 1px 8px;
-    font-size: 9px;
-    border-radius: 4px; }
 
+    top: 3px;
+    right: -24px;
+    width: 24px;
+    padding: 8px 5px;
+    padding-top: 5px;
 
-.palette-expanded {
+    border-radius: 0 5px 5px 0;
+    box-shadow: 0px -4px 10px -3px rgba(0,0,0,0.1);
+    background-color: $cgx-med-grey;
+    color: $cgx-dark-blue;
+
+    text-align: center;
+    cursor: pointer;
+  }
+
+  #palette-hide {
+    display: none
+  }
+
+  #palette-show {
+    display: block;
+    height: 88px;
+
+    i {
+      display: block;
+
+      width: 16px; height: 16px;
+
+      font-size: 16px;
+    }
+    span {
+      display: block;
+
+      transform: rotate(90deg);
+
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+  }
+
+  &.expanded {
+    .button-collapse {
+      height: 30px;
+
+      padding-top: 5px;
+    }
+
+    #palette-hide {
+      display: inline-block;
+
+      font-size: 16px;
+
+      transform: rotate(180deg);
+    }
+
+    #palette-show {
+      display: none;
+    }
+  }
+}
+
+/*.palette-expanded {
     & #palette {
         width: 380px;
         box-shadow: 1px 0 6px rgba(0,0,0,0.1);
@@ -64,62 +114,120 @@
     & #palette-search { display: none !important; }
     & #palette-edit { background: $workspace-button-background-active }
     & #palette-editor { display: block !important }
-}
+}*/
 
 #palette > .palette-spinner {
     padding-top: 80px;
 }
+
 .palette-search {
   position: absolute;
   width: 100%;
+//  height: $workspace-header-height;
+  border-radius: 3px;
   overflow: hidden;
-  background: #ffffff;
+  background: $cgx-med-grey;
   text-align: center;
-  height: $workspace-header-height;
   padding: 3px;
   border-bottom: 1px solid $primary-border-color;
-  box-sizing:border-box;
+}
+
+.palette-search-container {
+  position: relative;
+
+  i {
+    font-size: 10px;
+    color: #666;
+  }
+
+  i.fa-search {
+    position: absolute;
+    pointer-events: none;
+    left: 8px;
+    top: 9px;
+  }
+
+  i.fa-times {
+    position: absolute;
+    right: 5px;
+    top: 9px;
+  }
+
+  input {
+    border-radius: 0;
+    border: none;
+    width: 100%;
+    box-shadow: none;
+    padding: 3px 17px 3px 22px;
+    margin: 0px;
+    height: 30px;
+  }
+
+  input:focus {
+    border: none;
+    box-shadow: none;
+  }
+
+  a {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    display: none;
+  }
+
+  .palette-search-results {
+    position: absolute;
+    right: 18px;
+    top: 4px;
+    background: #eee;
+    color: #666;
+    padding: 1px 8px;
+    font-size: 9px;
+    border-radius: 4px;
+  }
 }
 
 #palette-container {
   position: absolute;
 
-//  top: $workspace-header-height;
-  top: 0;
+  line-height: 0px; // remove annoying top 'gap'
+  top: 36px;
   left: 0;
-  bottom: 25px;
+  bottom: 0px;
   right: 0;
 
+  // zero default 'ul'
   padding: 0;
+  margin: 0;
 
-  box-sizing:border-box;
-}
-
-.palette-scroll {
   overflow-y: auto;
 }
 
-#palette-footer {
-    @include component-footer;
-}
-.palette-button {
-    @include component-footer-button;
+.category-list li a {
+  border-bottom: 1px solid #e6ebee;
+  color: #37474f;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 8px 15px 8px 15px;
+  position: relative;
 }
 
-.category-list li a {
-    border-bottom: 1px solid #e6ebee;
-    color: #37474f;
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-    font-size: 14px;
-    padding: 8px 15px 8px 15px;
-    position: relative;
+.palette-category {
+  border-bottom: 1px solid #ccc;
+
+  .truncate {
+      max-width: 180px;
+      width: 180px;
+  }
 }
 
 .palette-header {
   position: relative;
-  background: $palette-header-background;
+  background: $cgx-light-blue;
   cursor: pointer;
   text-align: left;
   padding: 9px;
@@ -143,18 +251,11 @@
   }
 }
 
-.palette-category {
-  border-bottom: 1px solid #ccc;
-
-  .truncate {
-      max-width: 180px;
-      width: 180px;
-  }
-}
-
-
+/**
+ * List of Palette Components
+**/
 .palette-content {
-  background: #fff;
+  background: $cgx-clear-blue;
   padding: 3px;
   margin: 0px;
 }
@@ -260,7 +361,7 @@
 }*/
 
 svg:not(:root) {
-    overflow: hidden;
+  overflow: hidden;
 }
 .inline-block {
     display: inline-block !important;
@@ -275,10 +376,9 @@ svg:not(:root) {
 
 .palette-icon {
   display: inline-block !important;
-  vertical-align: middle;
+  vertical-align: 8;
   border-radius: 4px;
   box-shadow: 0px 0px 8px rgba(0,0,0,0.15);
-  display: inline-block;
   margin-right: 10px;
 }
 
@@ -295,7 +395,7 @@ li.palette-node {
     display: inline-block !important;
     vertical-align: middle;
     padding: 0;
-    background: #fefefe;
+    background: $cgx-clear-blue;
     height: 45px;
   }
 
@@ -314,6 +414,7 @@ li.palette-node {
   &.palette-node {
     border: 1px solid;
     border-radius: 3px;
+    z-index: 100;
   }
 
   span svg { display: none; }
