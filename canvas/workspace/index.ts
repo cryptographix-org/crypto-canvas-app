@@ -54,14 +54,22 @@ export class Workspace extends Panel {
     return `
     <!--div id='workspace-header' style='background-color: #AC57A0;'><span style='height:100%;'>&nbsp;**&nbsp;</span>
     </div-->
-    <!--div class="canvas-zoom clearfix designer_options">
+    <div class="canvas-zoom">
       <ul>
         <li >
-        <button type="button" class="btn" title="Zoom In" id="canvas-zoom-in" >
-        <i class="material-icons" >add</i></button></li>
-        <li ><button type="button" class="btn" id="canvas-zoom-out" title="Zoom Out" >
-        <i class="material-icons" data-eventmap="canvas-zoom-out" >remove</i></button></li>
-        <li ><button type="button" class="btn" id="canvas-zoom-reset" title="Reset Viewport" ><i class="material-icons reset" ></i></button></li></ul></div-->
+          <button type="button" title="Zoom In" id="canvas-zoom-in" >
+          <i class="material-icons">&#xE145;</i></button>
+        </li>
+        <li>
+          <button type="button" id="canvas-zoom-reset" title="Reset Viewport" >
+          <i class="material-icons">&#xE1B7;</i></button>
+        </li>
+        <li>
+          <button type="button" id="canvas-zoom-out" title="Zoom Out" >
+          <i class="material-icons">&#xE15B</i></button>
+        </li>
+      </ul>
+    </div>
     <div id='workspace-canvas' style='background-color: #0E1331; top: 0px;'>
     </div>
     <!--div id='workspace-footer' style='background-color: #0E1331; display: flex; '>

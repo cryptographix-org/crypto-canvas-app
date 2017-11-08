@@ -34,6 +34,11 @@ export class ComponentLibrary extends EventHub {
             .then((module) => {
               resolve(module.default as any as ComponentPackageConstructor);
             });
+        case '/payments':
+          return import('../../components/payments/index')
+            .then((module) => {
+              resolve(module.default as any as ComponentPackageConstructor);
+            });
         default:
           reject("Unknown package: " + from.pathname);
       }

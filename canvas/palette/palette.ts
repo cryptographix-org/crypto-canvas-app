@@ -10,20 +10,24 @@ export class Palette extends Panel {
     if (!open) {
       container.removeClass('palette-open')
         .addClass('palette-close')
-        .find('.palette-content').css('display', 'none');
+      //.find('.palette-content').css('display', 'none');
     }
     else {
       container.addClass('palette-open')
         .removeClass('palette-close')
-        .find('.palette-content').css('display', 'block');
+      //.find('.palette-content').css('display', 'block');
     }
   }
 
   constructor(public me: HTMLElement, public registry: ComponentRegistry) {
     super(me);
 
-    $('#palette-hide').click(() => { $('#palette').removeClass('expanded'); });
-    $('#palette-show').click(() => { $('#palette').addClass('expanded'); });
+    $('#palette-toggle').click(() => {
+      if ($(me).hasClass('expanded'))
+        $('#palette').removeClass('expanded');
+      else
+        $('#palette').addClass('expanded');
+    });
 
     $('#palette-collapse-all').click(() => { this.showCategory($(me).find('.palette-category'), false); });
     $('#palette-expand-all').click(() => { this.showCategory($(me).find('.palette-category'), true); });
@@ -175,7 +179,8 @@ export class Palette extends Panel {
                   <div class="palette_port palette_port_output" style="top: 9px;"></div>
                 </li-->*/
           contentEl.append(`
-<li id="palette_node_${compactName}" title="${comp.description}" class="palette-node">
+<li title="${comp.description}" class="palette-node">
+ <div id="palette_node_${compactName}" class="palette-node">
   <a class="clearfix" title="${comp.description}">
     <span class="" style="width: 10px"></span>
     <span class="inline-block mrm mtm">
@@ -185,11 +190,13 @@ export class Palette extends Panel {
     </span>
     <span class="palette-node-name" title="${comp.description}">${comp.name}</span>
   </a>
+  </div>
 </li>`);
 
           el = contentEl.find('#palette_node_' + compactName);
 
           el.data('component-id', comp.id);
+
           el.click((evt) => { evt.preventDefault(); })
 
           this.makeDraggable(el);
@@ -202,7 +209,7 @@ export class Palette extends Panel {
     let categoryEl = palette.find('#palette-container-' + category);
 
     // Not in DOM, create div
-    if (categoryEl.empty()) {
+    if (!categoryEl.length) {
       // Initially closed
       palette.append(`
 <li id="palette-container-${category}" class="palette-category palette-close">
@@ -211,7 +218,8 @@ export class Palette extends Panel {
     <span class="inline-block truncate" title="${category}">${category}</span>
     <i class="inline-block right fa fa-angle-down"></i>
   </a>
-  <ul class="palette-content" id="palette-base-category-${category}" style="display: none; ">
+
+  <ul class="palette-content" id="palette-base-category-${category}">
   </ul>
 </li>`);
 
@@ -239,7 +247,7 @@ export class Palette extends Panel {
         $(el).remove();
     });
 
-    let empty = categoryElements.length == 0;
+    let empty = !categoryElements.length;
 
     // Refresh (or insert) active categoriess
     categories.forEach((cat) => {
@@ -252,14 +260,6 @@ export class Palette extends Panel {
 
   getTemplate(): string {
     return `
-<span class="button-collapse">
-  <i id="palette-hide" class="material-icons expand-icon">&#xE31C;</i>
-  <a id="palette-show">
-    <i class="material-icons">&#xE31C;</i>
-    <span>Palette</span>
-  </a>
-</span>
-
 <img src="red/images/spin.svg" class="palette-spinner hide" style="display: none;">
 <div id="palette-search" class="palette-search">
   <div class="palette-search-container">
@@ -268,64 +268,25 @@ export class Palette extends Panel {
     <a href="#"><i class="fa fa-times"></i></a>
     <span class="palette-search-results hide"></span>
   </div>
+  <div class="palette-button-container">
+    <a id="palette-collapse-all" class="palette-button" href="#">
+    <i class="fa fa-angle-double-up"></i>
+    </a>
+    <a id="palette-expand-all" class="palette-button" href="#">
+    <i class="fa fa-angle-double-down"></i>
+    </a>
+  </div>
 </div>
 
 <ul id="palette-container" class="category-list">
 </ul>
-<!--div id="palette-footer"><div>
-  <a class="palette-button" id="palette-collapse-all" href="#">
-  <i class="fa fa-angle-double-up"></i>
-  </a>
-  <a class="palette-button" id="palette-expand-all" href="#">
-  <i class="fa fa-angle-double-down"></i>
-  </a>
-</div></div-->
-<div id="palette-shade" class="hide" style="display: none;"></div>
 
-<!--div class="floating-menu-wrap expanded" style="background-color: #eee !important;">
-  <div class="activity-content-wrap">
-    <div class="activity-input-field">
-      <div class="activity-action">
-        <div class="search-wrap">
-          <div class="input-field">
-            <input id="focusOn" type="search" placeholder="Search" autocomplete="off">
-            <label for="search-activity" class="active"><i class="flow-icons search-icon"></i></label>
-          </div>
-        </div><span class="action-toggle-link"><i class="flow-icons filter-icon-gray"></i><i class="flow-icons clear-icon material-icons">close</i></span></div>
-    </div>
-    <div class="activity-tab-wrap">
-      <ul class="tabs">
-        <li class="nova-semibold tab"><a href="javascript:void(0);" title="Services" class="tooltipped"><i class="flow-icons services-icon"></i></a></li>
-        <li class="nova-semibold tab"><a href="javascript:void(0);" title="Utility" class="active tooltipped"><i class="flow-icons utilities-icon"></i></a></li>
-        <li class="nova-semibold tab"><a href="javascript:void(0);" title="Devices" class="tooltipped"><i class="flow-icons things-icon"></i></a></li>
-        <li class="nova-semibold tab"><a href="javascript:void(0);" title="Custom" class="tooltipped"><i class="flow-icons custom-icon"></i></a></li>
-      </ul>
-      <div class="tab-content activity-tab-wrap">
-        <div class="tab-pane active-pane">
-          <ul class="activ-list" id="list-container">
-            <li><a href="javascript:;" class="clearfix"><span class="api-design inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="API Design">API Design</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="archive inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="Archive">Archive</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="data-store inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="Data Store">Data Store</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="devops-tools inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="DevOps Tools">DevOps Tools</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="developer-tools inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="Developer Tools">Developer Tools</span><span class="action-tags"><i class="new">NEW</i></span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="enterprise-connector inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="Enterprise Connector">Enterprise Connector</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="ftp inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="FTP">FTP</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="file inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="File">File</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="http inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="HTTP">HTTP</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="json-tools inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="JSON Tools">JSON Tools</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="loop inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="Loop">Loop</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="notification inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="Notification">Notification</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="operations inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="Operations">Operations</span><span class="action-tags"><i class="new">NEW</i></span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="smtp inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="SMTP">SMTP</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="spreadsheet inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="SpreadSheet">SpreadSheet</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="transform inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="Transform">Transform</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="utility-tools inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="Utility Tools">Utility Tools</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-            <li><a href="javascript:;" class="clearfix"><span class="webmaster-tools inline-block activity-icon icon-30"></span><span class="inline-block truncate" title="Webmaster Tools">Webmaster Tools</span><span class="material-icons inline-block right">keyboard_arrow_down</span></a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</div-->`;
+<a id="palette-toggle" class="button-collapse">
+  <i class="material-icons">&#xE31C;</i>
+  <span>Palette</span>
+</a>
+
+<div id="palette-shade" class="hide" style="display: none;"></div>
+`;
   }
 }

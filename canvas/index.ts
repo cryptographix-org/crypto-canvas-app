@@ -8,7 +8,10 @@ jQuery(function($) {
   let app = new CanvasApp($('body'));
 
   let reg = new ComponentLibrary(new URL('crypto', document.location.toString()));
+  app.registry.register(reg);
+  reg.loadModules();
 
+  reg = new ComponentLibrary(new URL('payments', document.location.toString()));
   app.registry.register(reg);
 
   reg.loadModules()
