@@ -29,11 +29,13 @@ export class ComponentLibrary extends EventHub {
   importPackage(from: URL): Promise<ComponentPackageConstructor> {
     return new Promise<ComponentPackageConstructor>((resolve, reject) => {
       switch (from.pathname) {
+        case '/labs/crypto':
         case '/crypto':
           return import('../../components/crypto/index')
             .then((module) => {
               resolve(module.default as any as ComponentPackageConstructor);
             });
+        case '/labs/payments':
         case '/payments':
           return import('../../components/payments/index')
             .then((module) => {

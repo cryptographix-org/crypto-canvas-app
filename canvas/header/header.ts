@@ -12,7 +12,7 @@ export class Header extends Panel {
     return `
       <header-group style="float: left">
         <header-logo>
-          <img src="/static/images/cgx-logo.png"/>
+          <img src="static/images/cgx-logo.png"/>
         </header-logo>
         <header-title>Canvas Project--Canvas Project--Canvas Project--Canv</header-title>
       </header-group>

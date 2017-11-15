@@ -260,7 +260,7 @@ export class Palette extends Panel {
 
   getTemplate(): string {
     return `
-<img src="red/images/spin.svg" class="palette-spinner hide" style="display: none;">
+<!--img src="red/images/spin.svg" class="palette-spinner hide" style="display: none;"-->
 <div id="palette-search" class="palette-search">
   <div class="palette-search-container">
     <i class="fa fa-search"></i>

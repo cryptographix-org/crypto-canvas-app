@@ -24,14 +24,26 @@ module.exports = {
       use: ExtractTextPlugin.extract({
         // use style-loader in development
         fallback: "style-loader",
-        use: [{
-          loader: "css-loader"
-        }, {
-          loader: "sass-loader",
-          options: {
-            includePaths: [path.resolve(__dirname, 'canvas/core/')]
+        use: [
+          {
+            loader: "css-loader"
+          },
+          {
+            loader: "resolve-url-loader",
+            options: {
+              root: path.resolve(__dirname, 'public/')
+            }
+          },
+          {
+            loader: "sass-loader",
+            options: {
+              includePaths: [
+                path.resolve(__dirname, 'canvas/core/'),
+                path.resolve(__dirname, 'public/')
+              ]
+            }
           }
-        }],
+        ],
       })
     } ]
   },
@@ -66,7 +78,7 @@ module.exports = {
   output: {
     filename: '[name]-[chunkhash].js',
     path: path.resolve( __dirname, 'dist' ),
-    publicPath: "/"
+    publicPath: "/labs"
   },
   devServer: {
     contentBase: "./public/",

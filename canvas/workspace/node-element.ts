@@ -377,8 +377,8 @@ export class NodeElement extends NodeInfo {
     }
 
     //TODO: these ought to be SVG
-    nodeSelector.append("image").attr("class", "node_error hidden").attr("xlink:href", "icons/node-red/node-error.png").attr("x", 0).attr("y", -6).attr("width", 10).attr("height", 9);
-    nodeSelector.append("image").attr("class", "node_changed hidden").attr("xlink:href", "icons/node-red/node-changethis.png").attr("x", 12).attr("y", -6).attr("width", 10).attr("height", 10);
+    //    nodeSelector.append("image").attr("class", "node_error hidden").attr("xlink:href", "icons/node-red/node-error.png").attr("x", 0).attr("y", -6).attr("width", 10).attr("height", 9);
+    //    nodeSelector.append("image").attr("class", "node_changed hidden").attr("xlink:href", "icons/node-red/node-changethis.png").attr("x", 12).attr("y", -6).attr("width", 10).attr("height", 10);
   }
 
   updateElement(thisElement: SVGElement) {
