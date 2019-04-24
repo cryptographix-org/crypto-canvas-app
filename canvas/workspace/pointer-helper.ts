@@ -1,15 +1,14 @@
-import { NodeElement } from './node-element'
-import { LinkElement } from './link-element'
+import { NodeElement } from "./node-element";
+import { LinkElement } from "./link-element";
 
-import * as d3 from 'd3';
+import * as d3 from "d3";
 
 type Point = [number, number];
 
 /**
  * Mouse and Touch
-**/
+ **/
 export class PointerHelper {
-
   constructor() {
     this.resetPointer();
   }
@@ -46,7 +45,7 @@ export class PointerHelper {
   }
 
   get hasOriginPoint(): boolean {
-    return (this.originPoint != undefined);
+    return this.originPoint != undefined;
   }
 
   setOriginPoint(point: Point) {
@@ -56,8 +55,10 @@ export class PointerHelper {
   }
 
   distanceFromOrigin(point: Point): number {
-    return (this.originPoint[0] - point[0]) * (this.originPoint[0] - point[0])
-      + (this.originPoint[1] - point[1]) * (this.originPoint[1] - point[1]);
+    return (
+      (this.originPoint[0] - point[0]) * (this.originPoint[0] - point[0]) +
+      (this.originPoint[1] - point[1]) * (this.originPoint[1] - point[1])
+    );
   }
 
   private clickElapsed;
@@ -69,23 +70,25 @@ export class PointerHelper {
     this.clickElapsed = now - this.clickTime;
     this.clickTime = now;
 
-    this.dblClickPrimed = (this.mouseDownNode == node);
+    this.dblClickPrimed = this.mouseDownNode == node;
     this.mouseDownNode = node;
   }
 
   nodeMouseUp(node: NodeElement): boolean {
-    let isDblClick = (this.dblClickPrimed && this.mouseDownNode == node && this.clickElapsed > 0 && this.clickElapsed < 750);
+    let isDblClick =
+      this.dblClickPrimed &&
+      this.mouseDownNode == node &&
+      this.clickElapsed > 0 &&
+      this.clickElapsed < 750;
 
     this.clickElapsed = 0;
 
     return isDblClick;
   }
 
-  linkMouseDown(d: LinkElement) {
+  linkMouseDown(d: LinkElement) {}
 
-  }
-
-  touchStartTime = 0;
+  touchStartTime = null;
   startTouchDistance;
   startTouchCenter;
   touchLongPressTimeout;
@@ -107,6 +110,6 @@ export class PointerHelper {
   }
 
   get touchStarted(): boolean {
-    return (this.touchStartTime != 0);
+    return this.touchStartTime != 0;
   }
 }
